@@ -1,51 +1,53 @@
 #!/usr/bin/python3
 
-"""
-Factors Challenge
-
-This script reads natural numbers from a file and attempts
-to factorize them into products of smaller numbers.
-It then prints the factorization results.
-
-Usage: factors.py <file>
-where <file> is a file containing natural numbers to factorize.
-
-Author: Udeme Harrison
-"""
-
+# Import necessary modules
 import sys
-import math
 
-def factorize(number):
+# Define a function to factorize a number
+def factorize(num):
     """
-    Factorizes a number into its prime factors.
-
-    Args:
-        number (int): The number to be factorized.
-    """
-    for i in range(2, int(math.sqrt(number)) + 1):
-        while number % i == 0:
-            print(f"{number}={i}*{number // i}")
-            number //= i
-    if number > 1:
-        print(f"{number}={number}*1")
-
-def main(input_filename):
-    """
-    Main function to read natural numbers from a file and perform factorization.
+    Factorize a number into two smaller numbers.
 
     Args:
-        input_filename (str): The name of the input file.
+        num (int): The number to factorize.
+
+    Returns:
+        tuple or None: A tuple (p, q) representing the factorization if successful, or None if the number is prime.
     """
-    with open(input_filename, 'r') as file:
+
+    for i in range(2, num):
+        if num % i == 0:
+            return i, num // i
+    return None
+
+# Check for command line argument
+if len(sys.argv) != 2:
+    print("Usage: factors <file>")
+    sys.exit(1)
+
+input_file = sys.argv[1]
+
+try:
+    # Open the input file
+    with open(input_file, 'r') as file:
         for line in file:
-            number = int(line.strip())
-            factorize(number)
+            # Remove newline character and convert to an integer
+            num = int(line.strip())
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: factors.py <file>")
-        sys.exit(1)
+            # Factorize the number
+            factors = factorize(num)
 
-    input_filename = sys.argv[1]
-    main(input_filename)
+            if factors:
+                p, q = factors
+                print(f"{num}={p}*{q}")
+            else:
+                print(f"{num} is a prime number")
+
+except FileNotFoundError:
+    # Handle the case where the input file is not found
+    print(f"File not found: {input_file}")
+    sys.exit(1)
+except ValueError:
+    # Handle invalid input in the file
+    print("Invalid input. Please provide a valid file with natural numbers greater than 1.")
+    sys.exit(1)
