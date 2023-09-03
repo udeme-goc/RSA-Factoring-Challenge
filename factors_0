@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+
+# Import necessary modules
+import sys
+
+# Define a function to factorize a number
+def factorize(num):
+    """
+    Factorize a number into two smaller numbers.
+
+    Args:
+        num (int): The number to factorize.
+
+    Returns:
+        tuple or None: A tuple (p, q) representing the factorization if successful, or None if the number is prime.
+    """
+
+    for i in range(2, num):
+        if num % i == 0:
+            return i, num // i
+    return None
+
+# Check for command line argument
+if len(sys.argv) != 2:
+    print("Usage: factors <file>")
+    sys.exit(1)
+
+input_file = sys.argv[1]
+
+try:
+    # Open the input file
+    with open(input_file, 'r') as file:
+        for line in file:
+            # Remove newline character and convert to an integer
+            num = int(line.strip())
+
+            # Factorize the number
+            factors = factorize(num)
+
+            if factors:
+                p, q = factors
+                print(f"{num}={p}*{q}")
+            else:
+                print(f"{num} is a prime number")
+
+except FileNotFoundError:
+    # Handle the case where the input file is not found
+    print(f"File not found: {input_file}")
+    sys.exit(1)
+except ValueError:
+    # Handle invalid input in the file
+    print("Invalid input. Please provide a valid file with natural numbers greater than 1.")
+    sys.exit(1)
